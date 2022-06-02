@@ -12,7 +12,7 @@ npm i @dcl/ui-env
 
 You need to create a `config` instance passing the different variables for all the desired envs.
 
-```json
+```js
 // config/env/dev|stg|prod.json
 {
   "FOO": "bar"
