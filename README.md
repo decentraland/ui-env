@@ -96,4 +96,4 @@ npm run build
 
 ## Release
 
-To release a new version of this package create a new release via GitHub
+To release a new version of this package create a [new release](https://github.com/decentraland/ui-env/releases) via GitHub
