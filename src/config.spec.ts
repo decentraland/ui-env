@@ -55,9 +55,9 @@ describe('when using a config', () => {
       })
 
       describe('and the variable does not exist', () => {
-        it('should return undefined', () => {
+        it('should return empty string', () => {
           config = createConfig(configByEnv)
-          expect(config.get('NON_EXISTENT')).toBe(undefined)
+          expect(config.get('NON_EXISTENT')).toBe('')
         })
 
         describe('and passing a default value', () => {
