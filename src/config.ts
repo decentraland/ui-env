@@ -2,6 +2,8 @@ import { Env, getEnv } from './env'
 
 export interface IConfig {
   get: (name: string, defaultValue?: string) => string | undefined
+  is(env: Env): boolean
+  getEnv(): Env
 }
 
 export type ConfigByEnv = Partial<Record<Env, Record<string, string>>>
@@ -21,5 +23,7 @@ export function createConfig(configByEnv: ConfigByEnv): IConfig {
       }
       return name in config ? config[name] : defaultValue
     },
+    is: (_env: Env) => env === _env,
+    getEnv: () => env,
   }
 }
