@@ -1,7 +1,7 @@
 import { Env, getEnv } from './env'
 
 export interface IConfig {
-  get: (name: string, defaultValue?: string) => string | undefined
+  get: (name: string, defaultValue?: string) => string
   is(env: Env): boolean
   getEnv(): Env
 }
@@ -17,7 +17,7 @@ export function createConfig(configByEnv: ConfigByEnv): IConfig {
   const env = getEnv()
   const config = configByEnv[env]
   return {
-    get: (name, defaultValue) => {
+    get: (name, defaultValue = '') => {
       if (!config) {
         throw new Error(`Could not find a config for env=${env}`)
       }
