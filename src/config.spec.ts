@@ -15,7 +15,7 @@ const configByEnv: ConfigByEnv = {
   },
 }
 
-describe('when geting using a config', () => {
+describe('when using a config', () => {
   const { env } = process
 
   afterEach(() => {
