@@ -75,14 +75,16 @@ export function getDefaultEnv(
  * @returns Env
  */
 export function getEnv(): Env {
-  const envFromQueryParam = getEnvFromQueryParam(window.location)
-  if (envFromQueryParam) {
-    return envFromQueryParam
-  }
+  if (typeof window !== 'undefined') {
+    const envFromQueryParam = getEnvFromQueryParam(window.location)
+    if (envFromQueryParam) {
+      return envFromQueryParam
+    }
 
-  const envFromTLD = getEnvFromTLD(window.location)
-  if (envFromTLD) {
-    return envFromTLD
+    const envFromTLD = getEnvFromTLD(window.location)
+    if (envFromTLD) {
+      return envFromTLD
+    }
   }
 
   return getDefaultEnv(process.env)
