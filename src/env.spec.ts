@@ -76,6 +76,20 @@ describe('when getting default env', () => {
         )
       })
     })
+    describe('and GATSBY_DCL_DEFAULT_ENV is invalid', () => {
+      it('should throw', () => {
+        expect(() =>
+          getDefaultEnv({ GATSBY_DCL_DEFAULT_ENV: 'invalid' })
+        ).toThrow()
+      })
+    })
+    describe('and GATSBY_DCL_DEFAULT_ENV is valid', () => {
+      it('should return GATSBY_DCL_DEFAULT_ENV as default env', () => {
+        expect(getDefaultEnv({ GATSBY_DCL_DEFAULT_ENV: 'dev' })).toBe(
+          Env.DEVELOPMENT
+        )
+      })
+    })
   })
 
   describe('and both DCL_DEFAULT_ENV and REACT_APP_DCL_DEFAULT_ENV are defined', () => {
@@ -95,6 +109,52 @@ describe('when getting default env', () => {
           getDefaultEnv({
             DCL_DEFAULT_ENV: 'dev',
             REACT_APP_DCL_DEFAULT_ENV: 'prod',
+          })
+        ).toThrow()
+      })
+    })
+  })
+
+  describe('and both DCL_DEFAULT_ENV and GATSBY_DCL_DEFAULT_ENV are defined', () => {
+    describe('and both have the same value', () => {
+      it('should return that value as default env', () => {
+        expect(
+          getDefaultEnv({
+            DCL_DEFAULT_ENV: 'dev',
+            GATSBY_DCL_DEFAULT_ENV: 'dev',
+          })
+        ).toBe(Env.DEVELOPMENT)
+      })
+    })
+    describe('and they have different values', () => {
+      it('should throw', () => {
+        expect(() =>
+          getDefaultEnv({
+            DCL_DEFAULT_ENV: 'dev',
+            GATSBY_DCL_DEFAULT_ENV: 'prod',
+          })
+        ).toThrow()
+      })
+    })
+  })
+
+  describe('and both REACT_APP_DCL_DEFAULT_ENV and GATSBY_DCL_DEFAULT_ENV are defined', () => {
+    describe('and both have the same value', () => {
+      it('should return that value as default env', () => {
+        expect(
+          getDefaultEnv({
+            REACT_APP_DCL_DEFAULT_ENV: 'dev',
+            GATSBY_DCL_DEFAULT_ENV: 'dev',
+          })
+        ).toBe(Env.DEVELOPMENT)
+      })
+    })
+    describe('and they have different values', () => {
+      it('should throw', () => {
+        expect(() =>
+          getDefaultEnv({
+            REACT_APP_DCL_DEFAULT_ENV: 'dev',
+            GATSBY_DCL_DEFAULT_ENV: 'prod',
           })
         ).toThrow()
       })
