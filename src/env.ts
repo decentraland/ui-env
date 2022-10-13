@@ -47,7 +47,7 @@ export function parseEnvVar(envVar: string) {
 export function getDefaultEnv(
   envVars: Record<string, string | undefined> = {}
 ): Env {
-  const { DCL_DEFAULT_ENV, REACT_APP_DCL_DEFAULT_ENV } = envVars
+  const { DCL_DEFAULT_ENV, REACT_APP_DCL_DEFAULT_ENV, GATSBY_DCL_DEFAULT_ENV } = envVars
 
   if (
     DCL_DEFAULT_ENV &&
@@ -59,12 +59,36 @@ export function getDefaultEnv(
     )
   }
 
+  if (
+    DCL_DEFAULT_ENV &&
+    GATSBY_DCL_DEFAULT_ENV &&
+    DCL_DEFAULT_ENV !== GATSBY_DCL_DEFAULT_ENV
+  ) {
+    throw new Error(
+      'You have defined both DCL_DEFAULT_ENV and GATSBY_DCL_DEFAULT_ENV with different values'
+    )
+  }
+
+  if (
+    REACT_APP_DCL_DEFAULT_ENV &&
+    GATSBY_DCL_DEFAULT_ENV &&
+    REACT_APP_DCL_DEFAULT_ENV !== GATSBY_DCL_DEFAULT_ENV
+  ) {
+    throw new Error(
+      'You have defined both REACT_APP_DCL_DEFAULT_ENV and GATSBY_DCL_DEFAULT_ENV with different values'
+    )
+  }
+
   if (DCL_DEFAULT_ENV) {
     return parseEnvVar(DCL_DEFAULT_ENV)
   }
 
   if (REACT_APP_DCL_DEFAULT_ENV) {
     return parseEnvVar(REACT_APP_DCL_DEFAULT_ENV)
+  }
+
+  if (GATSBY_DCL_DEFAULT_ENV) {
+    return parseEnvVar(GATSBY_DCL_DEFAULT_ENV)
   }
 
   return Env.PRODUCTION
