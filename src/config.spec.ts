@@ -120,7 +120,7 @@ describe('when using a config', () => {
       }
     })
 
-    describe('and the default environment is defined in a custom environment map', () => {
+    describe('and the default environment is defined in a custom environment variables map', () => {
       let customEnvironment: EnvironmentVariables
 
       beforeEach(() => {
