@@ -6,6 +6,8 @@ export enum Env {
   PRODUCTION = 'prod',
 }
 
+export type EnvironmentVariables = Record<string, string | undefined>
+
 /**
  * Returns an array with all the possible envs
  */
@@ -98,7 +100,7 @@ export function getDefaultEnv(
  * Returns the Env to be used
  * @returns Env
  */
-export function getEnv(): Env {
+export function getEnv(systemEnvVariables: EnvironmentVariables = process.env): Env {
   if (typeof window !== 'undefined') {
     const envFromQueryParam = getEnvFromQueryParam(window.location)
     if (envFromQueryParam) {
@@ -111,5 +113,5 @@ export function getEnv(): Env {
     }
   }
 
-  return getDefaultEnv(process.env)
+  return getDefaultEnv(systemEnvVariables)
 }

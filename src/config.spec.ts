@@ -1,19 +1,9 @@
 import { ConfigByEnv, createConfig, IConfig } from './config'
-import { Env } from './env'
+import { Env, EnvironmentVariables } from './env'
 
 let config: IConfig
 
-const configByEnv: ConfigByEnv = {
-  [Env.DEVELOPMENT]: {
-    FOO: 'bar-dev',
-  },
-  [Env.STAGING]: {
-    FOO: 'bar-stg',
-  },
-  [Env.PRODUCTION]: {
-    FOO: 'bar-prod',
-  },
-}
+let configByEnv: ConfigByEnv
 
 describe('when using a config', () => {
   const { env } = process
@@ -24,82 +14,177 @@ describe('when using a config', () => {
 
   describe('and getting a variable', () => {
     describe('and all the envs are defined', () => {
-      describe('and the env is Env.DEVELOPMENT', () => {
-        describe('and the variable exists', () => {
-          it('should return the value for that variable for the Env.DEVELOPMENT config', () => {
-            process.env.DCL_DEFAULT_ENV = Env.DEVELOPMENT
-            config = createConfig(configByEnv)
-            expect(config.get('FOO')).toBe('bar-dev')
-          })
-        })
+      beforeEach(() => {
+        configByEnv = {
+          [Env.DEVELOPMENT]: {
+            FOO: 'bar-dev',
+          },
+          [Env.STAGING]: {
+            FOO: 'bar-stg',
+          },
+          [Env.PRODUCTION]: {
+            FOO: 'bar-prod',
+          },
+        }
       })
 
-      describe('and the env is Env.STAGING', () => {
-        describe('and the variable exists', () => {
-          it('should return the value for that variable for the Env.STAGING config', () => {
-            process.env.DCL_DEFAULT_ENV = Env.STAGING
-            config = createConfig(configByEnv)
-            expect(config.get('FOO')).toBe('bar-stg')
+      describe.each([Env.DEVELOPMENT, Env.STAGING, Env.PRODUCTION])(
+        'and the env is %s',
+        (environment: string) => {
+          beforeEach(() => {
+            process.env.DCL_DEFAULT_ENV = environment
           })
-        })
-      })
 
-      describe('and the env is Env.PRODUCTION', () => {
-        describe('and the variable exists', () => {
-          it('should return the value for that variable for the Env.PRODUCTION config', () => {
-            process.env.DCL_DEFAULT_ENV = Env.PRODUCTION
-            config = createConfig(configByEnv)
-            expect(config.get('FOO')).toBe('bar-prod')
+          describe('and the variable exists', () => {
+            it('should return the value for that variable for the Env.DEVELOPMENT config', () => {
+              expect(createConfig(configByEnv).get('FOO')).toBe(
+                `bar-${environment}`
+              )
+            })
           })
-        })
-      })
 
-      describe('and the variable does not exist', () => {
-        it('should return empty string', () => {
-          config = createConfig(configByEnv)
-          expect(config.get('NON_EXISTENT')).toBe('')
-        })
+          describe('and the variable does not exist', () => {
+            let nonExistentVariable: string
+            let defaultValue: string | undefined
 
-        describe('and passing a default value', () => {
-          it('should return the default value', () => {
-            config = createConfig(configByEnv)
-            expect(config.get('NON_EXISTENT', 'someDefaultValue')).toBe(
-              'someDefaultValue'
-            )
+            beforeEach(() => {
+              nonExistentVariable = 'NON_EXISTENT'
+            })
+
+            describe("and there's no default value", () => {
+              beforeEach(() => {
+                defaultValue = undefined
+              })
+
+              it('should return empty string', () => {
+                expect(
+                  createConfig(configByEnv).get(
+                    nonExistentVariable,
+                    defaultValue
+                  )
+                ).toBe('')
+              })
+            })
+
+            describe("and there's a default value", () => {
+              beforeEach(() => {
+                defaultValue = 'someDefaultValue'
+              })
+
+              it('should return the default value', () => {
+                expect(
+                  createConfig(configByEnv).get(
+                    nonExistentVariable,
+                    defaultValue
+                  )
+                ).toBe(defaultValue)
+              })
+            })
           })
-        })
-      })
+        }
+      )
     })
 
     describe('and an env is missing', () => {
-      const { stg: _, ...configWithMissingEnv } = configByEnv
-      it('should throw', () => {
+      beforeEach(() => {
+        configByEnv = {
+          [Env.DEVELOPMENT]: {
+            FOO: 'bar-dev',
+          },
+          [Env.PRODUCTION]: {
+            FOO: 'bar-prod',
+          },
+        }
         process.env.DCL_DEFAULT_ENV = Env.STAGING
-        config = createConfig(configWithMissingEnv)
+      })
+
+      it('should throw when retrieving an environment variable', () => {
+        config = createConfig(configByEnv)
         expect(() => config.get('FOO')).toThrow()
       })
     })
   })
 
   describe('and getting the env', () => {
-    it('should return the env currently used by the config', () => {
-      process.env.DCL_DEFAULT_ENV = Env.STAGING
-      config = createConfig(configByEnv)
-      expect(config.getEnv()).toBe(Env.STAGING)
+    beforeEach(() => {
+      configByEnv = {
+        [Env.DEVELOPMENT]: {
+          FOO: 'bar-dev',
+        },
+        [Env.STAGING]: {
+          FOO: 'bar-stg',
+        },
+        [Env.PRODUCTION]: {
+          FOO: 'bar-prod',
+        },
+      }
+    })
+
+    describe('and the env is defined in a custom system environment map', () => {
+      let customEnvironment: EnvironmentVariables
+
+      beforeEach(() => {
+        customEnvironment = {
+          DCL_DEFAULT_ENV: Env.DEVELOPMENT,
+        }
+      })
+
+      it('should return the env from the custom system environment map', () => {
+        config = createConfig(configByEnv, {
+          systemEnvVariables: customEnvironment,
+        })
+        expect(config.getEnv()).toBe(Env.DEVELOPMENT)
+      })
+    })
+
+    describe('and the env is defined in a system environment variable', () => {
+      beforeEach(() => {
+        process.env.DCL_DEFAULT_ENV = Env.STAGING
+      })
+
+      it('should return the env currently used by the config', () => {
+        config = createConfig(configByEnv)
+        expect(config.getEnv()).toBe(Env.STAGING)
+      })
     })
   })
 
   describe('and checking if a given env is the current one', () => {
-    it('should return true if the given env is the current one', () => {
-      process.env.DCL_DEFAULT_ENV = Env.STAGING
-      config = createConfig(configByEnv)
-      expect(config.is(Env.STAGING)).toBe(true)
+    beforeEach(() => {
+      configByEnv = {
+        [Env.DEVELOPMENT]: {
+          FOO: 'bar-dev',
+        },
+        [Env.STAGING]: {
+          FOO: 'bar-stg',
+        },
+        [Env.PRODUCTION]: {
+          FOO: 'bar-prod',
+        },
+      }
     })
-    it('should return false if the given env is not the current one', () => {
-      process.env.DCL_DEFAULT_ENV = Env.STAGING
-      config = createConfig(configByEnv)
-      expect(config.is(Env.DEVELOPMENT)).toBe(false)
-      expect(config.is(Env.PRODUCTION)).toBe(false)
+
+    describe("and it's the current one", () => {
+      beforeEach(() => {
+        process.env.DCL_DEFAULT_ENV = Env.STAGING
+      })
+
+      it('should return true', () => {
+        config = createConfig(configByEnv)
+        expect(config.is(Env.STAGING)).toBe(true)
+      })
+    })
+
+    describe("and it's not the current one", () => {
+      beforeEach(() => {
+        process.env.DCL_DEFAULT_ENV = Env.STAGING
+      })
+
+      it('should return false', () => {
+        config = createConfig(configByEnv)
+        expect(config.is(Env.DEVELOPMENT)).toBe(false)
+        expect(config.is(Env.PRODUCTION)).toBe(false)
+      })
     })
   })
 })

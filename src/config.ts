@@ -1,4 +1,4 @@
-import { Env, getEnv } from './env'
+import { Env, EnvironmentVariables, getEnv } from './env'
 
 export interface IConfig {
   get: (name: string, defaultValue?: string) => string
@@ -13,8 +13,8 @@ export type ConfigByEnv = Partial<Record<Env, Record<string, string>>>
  * @param configByEnv - A record of variables for each Env
  * @returns Config
  */
-export function createConfig(configByEnv: ConfigByEnv): IConfig {
-  const env = getEnv()
+export function createConfig(configByEnv: ConfigByEnv, options?: { systemEnvVariables?: EnvironmentVariables }): IConfig {
+  const env = getEnv(options?.systemEnvVariables)
   const config = configByEnv[env]
   return {
     get: (name, defaultValue = '') => {

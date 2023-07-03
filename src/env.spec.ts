@@ -203,14 +203,20 @@ describe('when getting env', () => {
       })
     })
 
-    describe('and env is "dev"', () => {
+    describe('and the system env variable is "dev"', () => {
       it('should return Env.DEVELOPMENT', () => {
         mockProcess({ DCL_DEFAULT_ENV: 'dev' })
         expect(getEnv()).toBe(Env.DEVELOPMENT)
       })
     })
 
-    describe('and search param is "stg" and env is "dev"', () => {
+    describe("and there's a custom system environment variable set to dev", () => {
+      it('should return Env.DEVELOPMENT', () => {
+        expect(getEnv({ DCL_DEFAULT_ENV: 'dev' })).toBe(Env.DEVELOPMENT)
+      })
+    })
+
+    describe('and search param is "stg" and the system env variable is "dev"', () => {
       it('should return Env.STAGING', () => {
         mockLocation({ search: '?env=stg' })
         mockProcess({ DCL_DEFAULT_ENV: 'dev' })
