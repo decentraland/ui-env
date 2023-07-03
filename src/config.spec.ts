@@ -36,7 +36,7 @@ describe('when using a config', () => {
           })
 
           describe('and the variable exists', () => {
-            it('should return the value for that variable for the Env.DEVELOPMENT config', () => {
+            it(`should return the value for that variable for the ${environment} config`, () => {
               expect(createConfig(configByEnv).get('FOO')).toBe(
                 `bar-${environment}`
               )
