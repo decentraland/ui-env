@@ -137,7 +137,7 @@ describe('when using a config', () => {
       })
     })
 
-    describe('and the default environment is defined in the process environment variable', () => {
+    describe('and the default environment is defined in the process.env variable', () => {
       beforeEach(() => {
         process.env.DCL_DEFAULT_ENV = Env.STAGING
       })
