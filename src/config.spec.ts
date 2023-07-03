@@ -120,7 +120,7 @@ describe('when using a config', () => {
       }
     })
 
-    describe('and the env is defined in a custom system environment map', () => {
+    describe('and the default environment is defined in a custom environment map', () => {
       let customEnvironment: EnvironmentVariables
 
       beforeEach(() => {
@@ -137,7 +137,7 @@ describe('when using a config', () => {
       })
     })
 
-    describe('and the env is defined in a system environment variable', () => {
+    describe('and the default environment is defined in the process environment variable', () => {
       beforeEach(() => {
         process.env.DCL_DEFAULT_ENV = Env.STAGING
       })
