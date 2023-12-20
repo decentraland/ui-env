@@ -73,6 +73,16 @@ describe('when getting environment from top level domain', () => {
       expect(getEnvFromTLD(location)).toBe(Env.PRODUCTION)
     })
   })
+
+  describe("and host is 'builder.decentraland.co'", () => {
+    beforeAll(() => {
+      location = { host: 'builder.decentraland.co' } as Location
+    })
+
+    it('should return Env.PRODUCTION', () => {
+      expect(getEnvFromTLD(location)).toBe(Env.PRODUCTION)
+    })
+  })
 })
 
 describe('when getting environment from query param', () => {
