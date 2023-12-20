@@ -8,7 +8,7 @@ import { Env, isEnv } from './env'
 export function getEnvFromTLD(location: Location): Env | null {
   const { host } = location
 
-  if (host.endsWith('.org')) {
+  if (host.endsWith('.org') || host.endsWith('.co')) {
     return Env.PRODUCTION
   } else if (host.endsWith('.today') || host.endsWith('.net')) {
     return Env.STAGING
