@@ -63,7 +63,7 @@ For example:
 
 If no TLD is found and there is no query param, the default environment will be used, which is `Env.PRODUCTION`.
 
-If you want to override the default environment you can use the environment var `DCL_DEFAULT_ENV` or `REACT_APP_DCL_DEFAULT_ENV` and set it with the values `dev`, `stg` or `prod`.
+If you want to override the default environment you can use the environment var `DCL_DEFAULT_ENV`, `REACT_APP_DCL_DEFAULT_ENV` or `VITE_DCL_DEFAULT_ENV` and set it with the values `dev`, `stg` or `prod`.
 
 This can be useful to configure the local environment or for deployments to other non-decentraland domains such as Vercel's.
 

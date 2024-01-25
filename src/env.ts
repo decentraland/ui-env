@@ -49,7 +49,12 @@ export function parseEnvVar(envVar: string) {
 export function getDefaultEnv(
   envVars: Record<string, string | undefined> = {}
 ): Env {
-  const { DCL_DEFAULT_ENV, REACT_APP_DCL_DEFAULT_ENV, GATSBY_DCL_DEFAULT_ENV } = envVars
+  const {
+    DCL_DEFAULT_ENV,
+    REACT_APP_DCL_DEFAULT_ENV,
+    VITE_DCL_DEFAULT_ENV,
+    GATSBY_DCL_DEFAULT_ENV,
+  } = envVars
 
   if (
     DCL_DEFAULT_ENV &&
@@ -58,6 +63,15 @@ export function getDefaultEnv(
   ) {
     throw new Error(
       'You have defined both DCL_DEFAULT_ENV and REACT_APP_DCL_DEFAULT_ENV with different values'
+    )
+  }
+  if (
+    DCL_DEFAULT_ENV &&
+    VITE_DCL_DEFAULT_ENV &&
+    DCL_DEFAULT_ENV !== VITE_DCL_DEFAULT_ENV
+  ) {
+    throw new Error(
+      'You have defined both DCL_DEFAULT_ENV and VITE_DCL_DEFAULT_ENV with different values'
     )
   }
 
@@ -89,6 +103,10 @@ export function getDefaultEnv(
     return parseEnvVar(REACT_APP_DCL_DEFAULT_ENV)
   }
 
+  if (VITE_DCL_DEFAULT_ENV) {
+    return parseEnvVar(VITE_DCL_DEFAULT_ENV)
+  }
+
   if (GATSBY_DCL_DEFAULT_ENV) {
     return parseEnvVar(GATSBY_DCL_DEFAULT_ENV)
   }
@@ -100,7 +118,9 @@ export function getDefaultEnv(
  * Returns the Env to be used
  * @returns Env
  */
-export function getEnv(systemEnvVariables: EnvironmentVariables = process.env): Env {
+export function getEnv(
+  systemEnvVariables: EnvironmentVariables = process.env
+): Env {
   if (typeof window !== 'undefined') {
     const envFromQueryParam = getEnvFromQueryParam(window.location)
     if (envFromQueryParam) {
