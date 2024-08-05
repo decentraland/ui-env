@@ -118,9 +118,7 @@ export function getDefaultEnv(
  * Returns the Env to be used
  * @returns Env
  */
-export function getEnv(
-  systemEnvVariables: EnvironmentVariables = process.env
-): Env {
+export function getEnv(systemEnvVariables?: EnvironmentVariables): Env {
   if (typeof window !== 'undefined') {
     const envFromQueryParam = getEnvFromQueryParam(window.location)
     if (envFromQueryParam) {
@@ -133,5 +131,12 @@ export function getEnv(
     }
   }
 
-  return getDefaultEnv(systemEnvVariables)
+  const envVars =
+    typeof systemEnvVariables === 'undefined' &&
+    typeof process === 'object' &&
+    typeof process.env === 'object'
+      ? process.env
+      : systemEnvVariables
+
+  return getDefaultEnv(envVars)
 }
