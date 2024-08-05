@@ -194,7 +194,8 @@ describe('when getting default env', () => {
 
 describe('when getting env', () => {
   let windowSpy: jest.SpyInstance<Window & typeof globalThis, []>
-  const { env } = process
+  const prevProcess = process
+  const { env: prevEnv } = process
 
   beforeEach(() => {
     windowSpy = jest.spyOn(window, 'window', 'get')
@@ -202,7 +203,8 @@ describe('when getting env', () => {
 
   afterEach(() => {
     windowSpy.mockRestore()
-    process.env = env
+    process = prevProcess
+    process.env = prevEnv
   })
 
   function mockLocation(mock: Partial<Location>) {
@@ -215,7 +217,7 @@ describe('when getting env', () => {
     )
   }
 
-  function mockProcess(mock: Record<string, string | undefined>) {
+  function mockProcessEnv(mock: Record<string, string | undefined>) {
     const prev = { ...process.env }
     process.env = { ...prev, ...mock }
   }
@@ -235,7 +237,7 @@ describe('when getting env', () => {
 
     describe('and the system env variable is "dev"', () => {
       it('should return Env.DEVELOPMENT', () => {
-        mockProcess({ DCL_DEFAULT_ENV: 'dev' })
+        mockProcessEnv({ DCL_DEFAULT_ENV: 'dev' })
         expect(getEnv()).toBe(Env.DEVELOPMENT)
       })
     })
@@ -249,8 +251,15 @@ describe('when getting env', () => {
     describe('and search param is "stg" and the system env variable is "dev"', () => {
       it('should return Env.STAGING', () => {
         mockLocation({ search: '?env=stg' })
-        mockProcess({ DCL_DEFAULT_ENV: 'dev' })
+        mockProcessEnv({ DCL_DEFAULT_ENV: 'dev' })
         expect(getEnv()).toBe(Env.STAGING)
+      })
+    })
+
+    describe('and process is not defined', () => {
+      it('should return Env.PRODUCTION', () => {
+        process = undefined as any
+        expect(getEnv()).toBe(Env.PRODUCTION)
       })
     })
   })
@@ -269,7 +278,7 @@ describe('when getting env', () => {
     })
   })
 
-  describe('and host is "market.decentraland.org"', () => {
+  describe('and host is "builder.decentraland.org"', () => {
     it('should return Env.PRODUCTION', () => {
       mockLocation({ host: 'builder.decentraland.org' })
       expect(getEnv()).toBe(Env.PRODUCTION)
