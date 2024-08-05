@@ -168,6 +168,29 @@ describe('when getting default env', () => {
     })
   })
 
+  describe('and both DCL_DEFAULT_ENV and VITE_DCL_DEFAULT_ENV are defined', () => {
+    describe('and both have the same value', () => {
+      it('should return that value as default env', () => {
+        expect(
+          getDefaultEnv({
+            DCL_DEFAULT_ENV: 'dev',
+            VITE_DCL_DEFAULT_ENV: 'dev',
+          })
+        ).toBe(Env.DEVELOPMENT)
+      })
+    })
+    describe('and they have different values', () => {
+      it('should throw', () => {
+        expect(() =>
+          getDefaultEnv({
+            DCL_DEFAULT_ENV: 'dev',
+            VITE_DCL_DEFAULT_ENV: 'prod',
+          })
+        ).toThrow()
+      })
+    })
+  })
+
   describe('and both REACT_APP_DCL_DEFAULT_ENV and GATSBY_DCL_DEFAULT_ENV are defined', () => {
     describe('and both have the same value', () => {
       it('should return that value as default env', () => {
