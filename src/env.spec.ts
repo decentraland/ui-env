@@ -257,9 +257,17 @@ describe('when getting env', () => {
     })
 
     describe('and process is not defined', () => {
-      it('should return Env.PRODUCTION', () => {
-        process = undefined as any
-        expect(getEnv()).toBe(Env.PRODUCTION)
+      describe('and no system env variable is defined', () => {
+        it('should return Env.PRODUCTION', () => {
+          process = undefined as any
+          expect(getEnv()).toBe(Env.PRODUCTION)
+        })
+      })
+      describe('and a system env variable is defined', () => {
+        it('should return the system env variable as Env', () => {
+          process = undefined as any
+          expect(getEnv({ DCL_DEFAULT_ENV: 'dev' })).toBe(Env.DEVELOPMENT)
+        })
       })
     })
   })
