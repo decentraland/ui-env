@@ -13,6 +13,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/decentraland/ui-env.git"
+  },
   "devDependencies": {
     "@types/jest": "^27.5.2",
     "@types/node": "^17.0.38",
