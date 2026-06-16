@@ -15,7 +15,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/decentraland/ui-env.git"
+    "url": "git+https://github.com/decentraland/ui-env.git"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",
