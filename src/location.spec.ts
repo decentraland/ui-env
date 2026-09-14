@@ -83,56 +83,56 @@ describe('when getting environment from top level domain', () => {
       expect(getEnvFromTLD(location)).toBe(Env.PRODUCTION)
     })
   })
-})
 
-describe('and the host is fully qualified with a trailing dot', () => {
-  describe("and host is 'decentraland.org.'", () => {
-    beforeAll(() => {
-      location = { host: 'decentraland.org.' } as Location
+  describe('and the host is fully qualified with a trailing dot', () => {
+    describe("and host is 'decentraland.org.'", () => {
+      beforeAll(() => {
+        location = { host: 'decentraland.org.' } as Location
+      })
+
+      it('should return Env.PRODUCTION', () => {
+        expect(getEnvFromTLD(location)).toBe(Env.PRODUCTION)
+      })
     })
 
-    it('should return Env.PRODUCTION', () => {
-      expect(getEnvFromTLD(location)).toBe(Env.PRODUCTION)
-    })
-  })
+    describe("and host is 'decentraland.zone.'", () => {
+      beforeAll(() => {
+        location = { host: 'decentraland.zone.' } as Location
+      })
 
-  describe("and host is 'decentraland.zone.'", () => {
-    beforeAll(() => {
-      location = { host: 'decentraland.zone.' } as Location
-    })
-
-    it('should return Env.DEVELOPMENT', () => {
-      expect(getEnvFromTLD(location)).toBe(Env.DEVELOPMENT)
-    })
-  })
-
-  describe("and host is 'decentraland.today.'", () => {
-    beforeAll(() => {
-      location = { host: 'decentraland.today.' } as Location
+      it('should return Env.DEVELOPMENT', () => {
+        expect(getEnvFromTLD(location)).toBe(Env.DEVELOPMENT)
+      })
     })
 
-    it('should return Env.STAGING', () => {
-      expect(getEnvFromTLD(location)).toBe(Env.STAGING)
-    })
-  })
+    describe("and host is 'decentraland.today.'", () => {
+      beforeAll(() => {
+        location = { host: 'decentraland.today.' } as Location
+      })
 
-  describe("and host is 'www.google.com.'", () => {
-    beforeAll(() => {
-      location = { host: 'www.google.com.' } as Location
-    })
-
-    it('should return null', () => {
-      expect(getEnvFromTLD(location)).toBe(null)
-    })
-  })
-
-  describe("and host is '.'", () => {
-    beforeAll(() => {
-      location = { host: '.' } as Location
+      it('should return Env.STAGING', () => {
+        expect(getEnvFromTLD(location)).toBe(Env.STAGING)
+      })
     })
 
-    it('should return null', () => {
-      expect(getEnvFromTLD(location)).toBe(null)
+    describe("and host is 'www.google.com.'", () => {
+      beforeAll(() => {
+        location = { host: 'www.google.com.' } as Location
+      })
+
+      it('should return null', () => {
+        expect(getEnvFromTLD(location)).toBe(null)
+      })
+    })
+
+    describe("and host is '.'", () => {
+      beforeAll(() => {
+        location = { host: '.' } as Location
+      })
+
+      it('should return null', () => {
+        expect(getEnvFromTLD(location)).toBe(null)
+      })
     })
   })
 })
